@@ -90,6 +90,5 @@ function [src_vocab, src_corpus, tar_vocab, tar_corpus, cont_corpus] = get_corpu
   
     src_vocab = get_vocab(src_vocab_file); 
     tar_vocab = get_vocab(tar_vocab_file); 
-    %tar_vocab = get_vocab(tar_vocab_file); 
     fprintf('Done importing data\n');
 end 

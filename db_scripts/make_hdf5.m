@@ -2,7 +2,7 @@ function [src_input, tar_input, cont_input] = make_hdf5(src_vmap, src_corpus, ta
 
   %Currently limit stream size to 1
   N = 1; 
-  max_ts = 80; 
+  max_ts = 80; %Set the maximum number of timesteps in the unrolled network 
   %D is the dimensionality of the data
   total_words_src = sum(cellfun(@length, src_corpus)); 
   total_words_cont = sum(cellfun(@length, cont_corpus)); 
@@ -28,10 +28,6 @@ function [src_input, tar_input, cont_input] = make_hdf5(src_vmap, src_corpus, ta
   fprintf('Total size Tar Vocab %d\n', sz_tar_vocab); 
 
   %T x N x D datastream. We use N = 1 for simplicity
-  %src_input = zeros(total_words_src, N, 1);  
-  %cont_input = ones(total_words_cont, N); 
-  %tar_input = zeros(total_words_tar, N, 1); 
-
   src_input = zeros(num_sen_src*max_ts, N, 1);  
   cont_input = ones(num_sen_src*max_ts, N); 
   tar_input = zeros(num_sen_tar*max_ts, N, 1); 
