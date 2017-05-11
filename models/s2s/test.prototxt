@@ -1,0 +1,204 @@
+name: "s2s_translator"
+
+layer {
+  name: "data"
+  type: "Input"
+  top: "input_sentence"
+  top: "cont_sentence"
+  top: "target_train_sentence"
+  input_param {
+    shape {
+      dim: 1
+      dim: 1
+      dim: 1
+    }
+    shape {
+      dim: 1
+      dim: 1
+    }
+    shape {
+      dim: 1
+      dim: 1
+      dim: 1
+    }
+  }
+}
+
+
+
+layer {
+  name: "embedding_source"
+  type: "Embed"
+  bottom: "input_sentence"
+  top: "embedded_input_sentence"
+  param {
+    lr_mult: 1
+  }
+  embed_param {
+    bias_term: false
+    input_dim: 150004
+    num_output: 1000
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+  }
+}
+
+layer {
+  name: "embedding_target"
+  type: "Embed"
+  bottom: "target_train_sentence"
+  top: "embedded_target_sentence"
+  param {
+    lr_mult: 1
+  }
+  embed_param {
+    bias_term: false
+    input_dim: 75004
+    num_output: 1000
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+  }
+}
+
+
+layer {
+  name: "concat"
+  bottom: "embedded_input_sentence"
+  bottom: "embedded_target_sentence"
+  top: "lstm_input"
+  type: "Concat"
+  concat_param {
+    axis: 3
+  }
+}
+
+
+layer {
+  name: "lstm1"
+  type: "LSTM"
+  bottom: "lstm_input"
+  bottom: "cont_sentence"
+  top: "lstm1"
+  recurrent_param {
+    debug_info: true
+    num_output: 1000
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+
+layer {
+  name: "lstm2"
+  type: "LSTM"
+  bottom: "lstm1"
+  bottom: "cont_sentence"
+  top: "lstm2"
+
+  recurrent_param {
+    num_output: 1000
+    debug_info: true
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+
+layer {
+  name: "lstm3"
+  type: "LSTM"
+  bottom: "lstm2"
+  bottom: "cont_sentence"
+  top: "lstm3"
+
+  recurrent_param {
+    num_output: 1000
+    debug_info: true
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+
+layer {
+  name: "lstm4"
+  type: "LSTM"
+  bottom: "lstm3"
+  bottom: "cont_sentence"
+  top: "lstm4"
+
+  recurrent_param {
+    num_output: 1000
+    debug_info: true
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+
+
+layer {
+  name: "predict"
+  type: "InnerProduct"
+  bottom: "lstm4"
+  top: "predict"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 75004
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }  
+  }
+}
+
+
+layer {
+  name: "probs"
+  type: "Softmax"
+  bottom: "predict"
+  top: "probs"
+}
+

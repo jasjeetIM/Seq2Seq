@@ -9,7 +9,7 @@ function model_path = test_net(opts, model_path, varargin)
 
   % init caffe solver
   try
-    net = caffe.get_net(opts.net_model_file, model_path, opts.phase)
+    net = caffe.get_net(opts.test_net_proto, model_path, opts.phase)
   catch
     fprintf('Error: Could not load model from weights file %s', model_path); 
     return; 

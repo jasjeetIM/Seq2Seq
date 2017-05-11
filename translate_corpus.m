@@ -16,14 +16,14 @@ function translate_corpus()
   opts.net_model_file = [opts.model_dir 'test.prototxt'];
   opts.src_vocab_file = './datasets/vocab_en.txt'; 
   opts.tar_vocab_file = './datasets/vocab_fr.txt'; 
-  opts.net_weights = './models/s2s/trained_models/ep7_ccb2_1_tar_iter_90000.caffemodel'; 
+  opts.net_weights = './models/s2s/trained_models/ccb_ep7_singles_ccb_crawl_iter_50000.caffemodel'; 
   opts.phase = 'test'; 
-  opts.db_name = 'ep7_ccb2';
+  opts.db_name = 'ccb_ep7_singles_ccb_crawl_50k';
   opts.model_old = false; 
   opts.vocab_same = false; 
   opts.in_file = './datasets/dev/ntst14.en'; 
-  opts.out_file = './datasets/dev/ntst14_ep7_ccb2_90k.fr';
+  opts.out_file = ['./datasets/dev/ntst14_' opts.db_name '.fr'];
   opts.beam_width = 4; 
   decoder(opts);  
-  caffe.reset_all();
+%  caffe.reset_all();
 

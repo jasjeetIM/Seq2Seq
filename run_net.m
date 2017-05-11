@@ -11,6 +11,7 @@ function run_net()
   opts.model_dir = './models/s2s/';
   opts.net_model_prototxt = [opts.model_dir 'train_crawl1.prototxt'];
   opts.net_solver_prototxt = [opts.model_dir 'solver_crawl1.prototxt']; 
+  opts.test_net_proto = [opts.model_dir 'test.prototxt'];  
   opts.load_from_proto = false;
   opts.net_weights = [opts.model_dir 'trained_models/ccb2_1_ep7_singles_ccb2_2_iter_110000.caffemodel'];  
   opts.phase = 'train'; 
@@ -24,7 +25,7 @@ function run_net()
   opts.seed = 1207; 
   % Train Network
   model_path = train_net(opts); 
-  opts.phase = 'test'; 
+  opts.phase = 'test';
   %We will test it on training data to begin with
   test_net(opts, model_path); 
   caffe.reset_all();

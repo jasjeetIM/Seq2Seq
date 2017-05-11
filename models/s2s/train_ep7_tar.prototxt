@@ -1,0 +1,221 @@
+name: "s2s_translator"
+
+layer {
+  name: "data"
+  type: "HDF5Data"
+  top: "cont_sentence"
+  top: "input_sentence"
+  top: "target_sentence"
+  top: "target_train_sentence"
+  include { phase: TRAIN }
+  hdf5_data_param {
+    source: "./hdf5/ep7_tar.txt"
+    batch_size: 800
+  }
+}
+
+layer {
+  name: "data"
+  type: "HDF5Data"
+  top: "cont_sentence"
+  top: "input_sentence"
+  top: "target_sentence"
+  top: "target_train_sentence"
+  include {
+    phase: TEST
+  }
+  hdf5_data_param {
+    source: "./hdf5/test_loc_tar.txt"
+    batch_size: 80
+  }
+}
+
+layer {
+  name: "embedding_source"
+  type: "Embed"
+  bottom: "input_sentence"
+  top: "embedded_input_sentence"
+  param {
+    lr_mult: 1
+  }
+  embed_param {
+    bias_term: false
+    input_dim: 150004
+    num_output: 1000
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+  }
+}
+
+layer {
+  name: "embedding_target"
+  type: "Embed"
+  bottom: "target_train_sentence"
+  top: "embedded_target_sentence"
+  param {
+    lr_mult: 1
+  }
+  embed_param {
+    bias_term: false
+    input_dim: 75004
+    num_output: 1000
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+  }
+}
+
+
+layer {
+  name: "concat"
+  bottom: "embedded_input_sentence"
+  bottom: "embedded_target_sentence"
+  top: "lstm_input"
+  type: "Concat"
+  concat_param {
+    axis: 3
+  }
+}
+
+
+layer {
+  name: "lstm1"
+  type: "LSTM"
+  bottom: "lstm_input"
+  bottom: "cont_sentence"
+  top: "lstm1"
+  recurrent_param {
+    num_output: 1000
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+
+layer {
+  name: "lstm2"
+  type: "LSTM"
+  bottom: "lstm1"
+  bottom: "cont_sentence"
+  top: "lstm2"
+
+  recurrent_param {
+    num_output: 1000
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+
+layer {
+  name: "lstm3"
+  type: "LSTM"
+  bottom: "lstm2"
+  bottom: "cont_sentence"
+  top: "lstm3"
+
+  recurrent_param {
+    num_output: 1000
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+
+layer {
+  name: "lstm4"
+  type: "LSTM"
+  bottom: "lstm3"
+  bottom: "cont_sentence"
+  top: "lstm4"
+
+  recurrent_param {
+    num_output: 1000
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+
+
+layer {
+  name: "predict"
+  type: "InnerProduct"
+  bottom: "lstm4"
+  top: "predict"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 75004
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }  
+  }
+}
+
+
+layer {
+  name: "cross_entropy_loss"
+  type: "SoftmaxWithLoss"
+  bottom: "predict"
+  bottom: "target_sentence"
+  top: "cross_entropy_loss"
+  exclude { phase: TEST }
+  loss_weight: 30
+  loss_param {
+    ignore_label: -1
+  }
+}
+
+layer {
+  name: "accuracy"
+  type: "Accuracy"
+  bottom: "predict"
+  bottom: "target_sentence"
+  top: "accuracy"
+  include { phase: TEST }
+  accuracy_param {
+    ignore_label: -1
+  }
+}

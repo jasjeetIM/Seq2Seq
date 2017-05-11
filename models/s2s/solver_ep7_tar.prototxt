@@ -1,0 +1,17 @@
+net: "models/s2s/train_ep7_tar.prototxt"
+base_lr: 0.7
+lr_policy: "step"
+gamma: 0.1
+stepsize: 10000
+display: 100
+max_iter: 982178 
+momentum: 0.9
+weight_decay: 0.0005
+snapshot: 10000
+snapshot_prefix: "./models/s2s/ep7"
+solver_mode: GPU
+debug_info: true
+random_seed: 1207
+average_loss: 100
+#clip_gradients: 100
+snapshot_after_train: true

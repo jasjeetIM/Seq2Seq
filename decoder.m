@@ -8,13 +8,13 @@ function decoder(opts)
   src_vocab = get_vocab(opts.src_vocab_file); 
   tar_vocab = get_vocab(opts.tar_vocab_file); 
   inv_tar_vocab = containers.Map(tar_vocab.values, tar_vocab.keys); 
-  net = caffe.get_net(opts.net_model_file, opts.net_weights, opts.phase)
-  %try
-  %  net = caffe.get_net(opts.net_model_file, opts.net_weights, opts.phase)
-  %catch
-  %  fprintf('Error: Could not load model from weights file %s\n', opts.net_weights); 
-   % return; 
-  %end
+  %net = caffe.get_net(opts.net_model_file, opts.net_weights, opts.phase)
+  try
+    net = caffe.get_net(opts.net_model_file, opts.net_weights, opts.phase)
+  catch
+    fprintf('Error: Could not load model from weights file %s\n', opts.net_weights); 
+    return; 
+  end
   fid = fopen(opts.in_file, 'r'); 
   fod = fopen(opts.out_file, 'wt'); 
   counter = 1; 
