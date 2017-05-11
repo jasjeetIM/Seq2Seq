@@ -8,7 +8,7 @@ function gpu_id = auto_select_gpu()
         gpu = gpuDevice(i);
         free = gpu.FreeMemory();
         fprintf('GPU %d: has memory:  %d\n', i, free);
-        if free > max_free
+        if free > max_free && i ~= 2
             max_free = free; 
             gpu_id = i;
         end

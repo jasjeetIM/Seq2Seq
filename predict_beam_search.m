@@ -20,7 +20,7 @@ function prediction = predict_beam_search(net, src_sen, cont_sen, tar_sen, src_v
   %Beam search setup
   frontier = {}; 
   decode = true; 
-  max_len = 100; % A sentence should not be longer than 100 words. 
+  max_len = length(cont_sen) + floor(length(cont_sen)/2);  
   src_pad = src_vocab('<PAD>'); 
   tar_pad = tar_vocab('<PAD>'); 
   tar_end = tar_vocab('<EOS>'); 
@@ -166,8 +166,9 @@ end
 
 
 function [probs, keys] = get_best_words(net,src_sen, cont_sen, tar_sen, beam_width, old_model);
-  fprintf('Now using input: '); 
+  fprintf('Now using src sen: '); 
   src_sen 
+  fprintf('tar sen: '); 
   tar_sen 
   fprintf('\n'); 
   %Get output for the last word
@@ -186,7 +187,8 @@ function [probs, keys] = get_best_words(net,src_sen, cont_sen, tar_sen, beam_wid
   end
   %Get the best 'beam_width' predictions
   [probs, keys] = sort(pred, 'descend');
-  fprintf('The top keys are ..\n'); 
+  fprintf('The top keys are ...\n'); 
   keys = keys(1:beam_width)
+  fprintf('Top probs are ...\n'); 
   probs = probs(1:beam_width)
 end
