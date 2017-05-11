@@ -1,5 +1,5 @@
 function model_path = train_net(opts, varargin)
-
+ %Main function for training the network
   %Cache directory to store model
   cache_dir = fullfile(pwd, 'output', 'cachedir');
   mkdir_if_missing(cache_dir); 
@@ -35,14 +35,9 @@ function model_path = train_net(opts, varargin)
     % one iter SGD update
     solver.step(1000);
     if mod(iter_, opts.display_loss) == 0
-      %pred = solver.net.blobs('predict').get_data(); 
       loss = solver.net.blobs('cross_entropy_loss').get_data(); 
       fprintf('Iteration: %d    Loss:%d\n', iter_, loss)
     end
-    %if mod(iter_, opts.save_iter) == 0
-    %  model_path_curr = fullfile(cache_dir, ['s2s_trained_' int2str(iter_) '_'  opts.db_name '.caffemodel']);
-    %  save_model(solver, model_path_curr); 
-    %end
     iter_ = solver.iter();
   end
   %Save final model
