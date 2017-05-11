@@ -16,9 +16,9 @@ function translate_corpus()
   opts.net_model_file = [opts.model_dir 'test.prototxt'];
   opts.src_vocab_file = './datasets/vocab_en.txt'; 
   opts.tar_vocab_file = './datasets/vocab_fr.txt'; 
-  opts.net_weights = './models/s2s/trained_models/singles_ep7_ccb2_1_tar_iter_80000.caffemodel'; 
+  opts.net_weights = './models/s2s/trained_models/s2s.caffemodel'; 
   opts.phase = 'test'; 
-  opts.db_name = 'singles_ep7_ccb1_80k';
+  opts.db_name = 's2s';
   opts.model_old = false; 
   opts.vocab_same = false; 
   opts.in_file = './datasets/dev/ntst14.en'; 
